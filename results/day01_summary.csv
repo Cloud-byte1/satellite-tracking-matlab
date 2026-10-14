@@ -1,0 +1,2 @@
+AltitudeKm,OrbitalRadiusKm,CircularSpeedKmPerSec,OrbitalPeriodSec,OrbitalPeriodMin,SpecificEnergyKm2PerSec2,MaxRelativeEnergyDrift,MaxRelativeAngularMomentumDrift,MaxRadiusDeviationKm,PositionClosureErrorKm,ConvergencePositionErrorKm,TestsPassed,TestsRun
+500,6878.137,7.61260817322387,5676.97802852586,94.616300475431,-28.9759015995174,6.29439127207758e-12,3.1471375006668e-12,5.59084583073854e-08,1.70279251953877e-07,1.68297464602449e-07,7,7

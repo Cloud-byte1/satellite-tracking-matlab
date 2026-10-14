@@ -1,0 +1,8 @@
+Test,MeasuredValue,Tolerance,Unit,Passed
+Initial circular speed,0,1e-12,km/s,1
+Requested period endpoint,0,1e-10,s,1
+One-orbit position closure,1.70279251953877e-07,0.0001,km,1
+One-orbit velocity closure,1.83837933172727e-10,1e-07,km/s,1
+Specific energy conservation,6.29439127207758e-12,1e-09,dimensionless,1
+Angular momentum conservation,3.1471375006668e-12,1e-09,dimensionless,1
+Tight-solution convergence,1.68297464602449e-07,0.001,km,1
