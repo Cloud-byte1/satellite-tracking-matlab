@@ -1,0 +1,7 @@
+Test,Passed
+Catalog contains five satellites,1
+Catalog contains the ISS,1
+Catalog contains four GPS satellites,1
+Catalog numbers are unique,1
+Primary format is OMM-compatible CSV,1
+Queries use official HTTPS endpoint,1
