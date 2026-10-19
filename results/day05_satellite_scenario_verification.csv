@@ -1,0 +1,9 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+Expected real satellites loaded,5,==,5,satellites,1
+All native propagators use SGP4 or SDP4,5,==,5,satellites,1
+Initial positions are finite,1,==,1,logical,1
+Initial velocities are finite,1,==,1,logical,1
+Initial radii remain above Earth,6799.09085774463,>,6478,km,1
+Initial orbital speeds are plausible,7.65494985468583,<,15,km/s,1
+Catalog identifiers remain unique,5,==,5,IDs,1
+Scenario timeline advances forward,180,>,1,s,1

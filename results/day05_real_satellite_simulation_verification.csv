@@ -1,0 +1,9 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+Five satellites propagated,5,==,5,satellites,1
+All requested time samples returned,361,==,361,samples,1
+All SGP4 calls report success,0,==,0,code,1
+All TEME states are finite,1,==,1,logical,1
+All satellite radii remain above Earth,417.08167791277,>,100,km,1
+All orbital speeds are physically plausible,7.66148949672266,<,15,km/s,1
+Catalog IDs remain unique,5,==,5,IDs,1
+Common UTC timeline is monotonic,1,==,1,logical,1

@@ -1,0 +1,12 @@
+Test,MeasuredValue,Unit,Passed
+Catalog contains five real satellites,5,records,1
+Catalog IDs exactly match the approved target list,1,logical,1
+Catalog IDs are unique,5,IDs,1
+ISS is present,1,records,1
+At least two GPS satellites are present,2,records,1
+At least two additional non-GPS satellites are present,2,records,1
+At least four mission groups are represented,4,groups,1
+Returned names agree with stable catalog IDs,1,logical,1
+All required Task 3 fields are present,1,logical,1
+All timestamps are explicit UTC datetimes,1,logical,1
+Mean-motion period conversion is correct,0,minutes,1

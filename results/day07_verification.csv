@@ -1,0 +1,16 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+At least five satellites,6,>=,5,satellites,1
+Three horizons per satellite,3,==,3,horizons,1
+All satellite-horizon cases present,18,==,18,cases,1
+Initial positions match,0,<=,1e-09,km,1
+Initial velocities match,0,<=,1e-12,km/s,1
+UTC timestamps strictly increase,1,==,1,logical,1
+SGP4 error codes all zero,0,==,0,code,1
+All propagated states finite,1,==,1,logical,1
+Frame rotations orthogonal,5.08770562206467e-16,<=,1e-10,Frobenius norm,1
+RTN bases orthogonal,6.37774571658814e-16,<=,1e-12,Frobenius norm,1
+RTN reconstruction closes,9.4435379911807e-13,<=,1e-09,km,1
+Separation magnitudes correct,0,<=,1e-12,km,1
+Comparison is reproducible,0,<=,1e-10,state units,1
+All three orbital regimes represented,3,>=,3,regimes,1
+All metrics nonnegative where required,1,==,1,logical,1

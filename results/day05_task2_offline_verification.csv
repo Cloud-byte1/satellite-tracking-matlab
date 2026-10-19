@@ -1,0 +1,7 @@
+Test,Passed
+Valid CSV is retrieved and typed,1
+Successful response is saved with provenance,1
+Fresh cache prevents a network request,1
+Network failure falls back to valid stale cache,1
+Malformed response is rejected,1
+Element epoch and retrieval time remain separate,1

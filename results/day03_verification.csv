@@ -1,0 +1,13 @@
+Test,MeasuredValue,Tolerance,Unit,Passed
+COE-state-COE position round trip,5.16493705235941e-12,1e-08,km,1
+COE-state-COE velocity round trip,5.40257841157141e-15,1e-11,km/s,1
+LEO circular speed versus sqrt(mu/r),8.88178419700125e-16,1e-12,km/s,1
+Kepler period endpoint across scenarios,0,1e-09,s,1
+Perigee altitude consistency,2.50474840868264e-09,0.0001,km,1
+Apogee altitude consistency,2.94356141239405e-07,0.0001,km,1
+Minimum speed versus vis-viva,8.66018368128607e-12,1e-07,km/s,1
+Maximum speed versus vis-viva,5.80513415116002e-12,1e-07,km/s,1
+Eccentricity recovered from state,6.66133814775094e-16,1e-12,dimensionless,1
+One-period position closure,3.62112793533561e-06,0.01,km,1
+Specific energy conservation,3.25422864498376e-11,1e-09,relative,1
+Angular momentum conservation,5.81482677252158e-12,1e-09,relative,1

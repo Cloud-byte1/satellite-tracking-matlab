@@ -7,5 +7,9 @@ function projectRoot = setupProject()
 projectRoot = fileparts(mfilename('fullpath'));
 addpath(fullfile(projectRoot, 'config'));
 addpath(genpath(fullfile(projectRoot, 'src')));
+thirdPartyDirectory = fullfile(projectRoot, 'third_party');
+if exist(thirdPartyDirectory, 'dir')
+    addpath(genpath(thirdPartyDirectory));
+end
 end
 

@@ -1,0 +1,4 @@
+Test,MeasuredValue,Tolerance,Unit,Passed
+Vallado epoch position,6.81920670605202e-09,1e-08,km,1
+Vallado epoch velocity,6.38035353311704e-10,1e-09,km/s,1
+SGP4 error code,0,0,code,1
