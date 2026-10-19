@@ -7,6 +7,7 @@ function outputs = run_day08_satellite_scenario(options)
 arguments
     options.ShowViewer (1,1) logical = true
     options.ShowGroundTracks (1,1) logical = true
+    options.ShowVisibilityControls (1,1) logical = true
     options.AutoPlay (1,1) logical = true
     options.PlaybackSpeedMultiplier (1,1) double {mustBePositive,mustBeFinite} = 900
 end
@@ -39,12 +40,17 @@ writetable(verification.results,fullfile(resultsDirectory, ...
     'day08_satellite_scenario_verification.csv'));
 
 viewer = [];
+controls = [];
 if options.ShowViewer
     viewer = satelliteScenarioViewer(scenario);
     if options.ShowGroundTracks
         for index = 1:numel(satellites)
             show(satellites(index).GroundTrack,viewer);
         end
+    end
+    if options.ShowVisibilityControls
+        controls = createDay08VisibilityControls(viewer,satellites, ...
+            day08.analysis,ShowGroundTracks=options.ShowGroundTracks);
     end
     if options.AutoPlay
         play(scenario,Viewer=viewer, ...
@@ -67,6 +73,6 @@ disp(summary(:,{'ScenarioName','Source', ...
     'IntegratedDrift24HoursMicroseconds'}));
 
 outputs = struct('scenario',scenario,'satellites',satellites, ...
-    'viewer',viewer,'analysis',day08.analysis,'summary',summary, ...
+    'viewer',viewer,'controls',controls,'analysis',day08.analysis,'summary',summary, ...
     'verification',verification);
 end

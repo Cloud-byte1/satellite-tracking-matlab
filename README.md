@@ -216,5 +216,7 @@ outputs = run_day08_satellite_scenario();
 Playback starts automatically at 900x real time. The six real CelesTrak cases
 and three theoretical comparison orbits all move on the 24-hour Day 8 timeline;
 the exported catalog links every trajectory to its computed special-relativistic
-clock drift.
+clock drift. A separate visibility panel provides an individual checkbox for
+every trajectory and quick filters for **All**, **Real only**, **Theoretical
+only**, and **None**.
 
