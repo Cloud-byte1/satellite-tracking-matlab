@@ -1,0 +1,9 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+All nine Day 8 scenarios loaded,9,==,9,scenarios,1
+Six real Day 8 satellites retained,6,==,6,satellites,1
+Three theoretical Day 8 orbits retained,3,==,3,orbits,1
+All viewer trajectories use saved ephemerides,9,==,9,satellites,1
+Initial positions match Day 8 histories,0,<=,1e-06,m,1
+Initial velocities match Day 8 histories,0,<=,1e-09,m/s,1
+Viewer spans the complete 24-hour analysis,86400,==,86400,s,1
+Clock drift values are finite,1,==,1,logical,1

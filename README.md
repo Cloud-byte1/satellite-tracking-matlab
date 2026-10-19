@@ -207,3 +207,14 @@ orbits. Gravitational time dilation and ground-clock comparisons are explicitly
 deferred to Day 9. See `docs/report/day08-special-relativity-guide.md` for the
 derivation, coordinate convention, results, and limitations.
 
+To animate those same nine Day 8 histories in MATLAB's native 3-D viewer, run:
+
+```matlab
+outputs = run_day08_satellite_scenario();
+```
+
+Playback starts automatically at 900x real time. The six real CelesTrak cases
+and three theoretical comparison orbits all move on the 24-hour Day 8 timeline;
+the exported catalog links every trajectory to its computed special-relativistic
+clock drift.
+
