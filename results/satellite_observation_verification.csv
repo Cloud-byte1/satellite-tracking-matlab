@@ -1,0 +1,9 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+Selected satellite is preserved,1,==,1,logical,1
+Selected timeline frame is preserved,1,==,1,logical,1
+UTC sample matches propagated history,0,==,0,s,1
+TEME position matches propagated history,0,==,0,km,1
+TEME velocity matches propagated history,0,==,0,km/s,1
+Altitude uses configured Earth radius,0,<=,1e-12,km,1
+Speed is the velocity-vector norm,0,<=,1e-12,km/s,1
+All displayed values are finite,1,==,1,logical,1

@@ -11,6 +11,7 @@ arguments
     options.ForceRefresh (1,1) logical = false
     options.ShowViewer (1,1) logical = true
     options.ShowGroundTracks (1,1) logical = true
+    options.ShowObservationPanel (1,1) logical = true
     options.AutoPlay (1,1) logical = false
     options.PlaybackSpeedMultiplier (1,1) double {mustBePositive,mustBeFinite} = 300
 end
@@ -46,12 +47,18 @@ save(fullfile(resultsDirectory,'day05_satellite_scenario_initial_state.mat'), ..
     'initialVelocityMetersPerSecond','verification');
 
 viewer = [];
+observationPanel = [];
 if options.ShowViewer
     viewer = satelliteScenarioViewer(scenario);
     if options.ShowGroundTracks
         for index = 1:numel(satellites)
             show(satellites(index).GroundTrack,viewer);
         end
+    end
+    if options.ShowObservationPanel
+        constants = earthConstants();
+        observationPanel = createSatelliteObservationPanel( ...
+            scenario,satellites,EarthRadiusKm=constants.radiusEarth);
     end
     if options.AutoPlay
         play(scenario,Viewer=viewer, ...
@@ -76,5 +83,5 @@ disp(tleResult.Catalog(:,{'SatelliteName','NORADCatalogID', ...
 
 outputs = struct('scenario',scenario,'satellites',satellites, ...
     'viewer',viewer,'tle',tleResult,'verification',verification, ...
-    'configuration',runConfiguration);
+    'configuration',runConfiguration,'observationPanel',observationPanel);
 end

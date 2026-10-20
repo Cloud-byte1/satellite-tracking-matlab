@@ -153,8 +153,11 @@ outputs = run_day05_real_satellite_simulation();
 ```
 
 Press **Play** to animate the five spacecraft. Drag the axes to rotate, use the
-mouse wheel to zoom, drag the timeline slider to scrub, and select 1x–10x from the
-speed menu. The default run covers 12 hours at 120-second intervals and exports a
+mouse wheel to zoom, drag the timeline slider to scrub, and select 1x–30x from the
+speed menu. Click any moving marker (or choose it under **Observe a satellite**)
+to see that satellite's exact UTC sample, TEME position and velocity, altitude,
+and speed. The readout updates continuously while playing or scrubbing. The
+default run covers 12 hours at 120-second intervals and exports a
 MAT-file, three verification/summary CSV files, a PNG, and an editable FIG file.
 
 The viewer is Earth-centered TEME, the native output frame of SGP4. It is an
@@ -174,7 +177,10 @@ outputs = run_day05_satellite_scenario();
 ```
 
 Drag the globe to orbit the camera, scroll to zoom, and use the viewer's timeline
-controls to scrub or play. To begin playback immediately at 300x real time, run
+controls to scrub or play. The companion **Satellite Time & Position** panel
+follows the globe timeline and reports the selected spacecraft's UTC time,
+latitude, longitude, altitude, inertial position and velocity, and speed. To begin
+playback immediately at 300x real time, run
 `run_day05_satellite_scenario(AutoPlay=true)`. For automated verification without
 opening the globe, pass `ShowViewer=false`.
 
@@ -218,5 +224,6 @@ and three theoretical comparison orbits all move on the 24-hour Day 8 timeline;
 the exported catalog links every trajectory to its computed special-relativistic
 clock drift. A separate visibility panel provides an individual checkbox for
 every trajectory and quick filters for **All**, **Real only**, **Theoretical
-only**, and **None**.
+only**, and **None**. A live observation panel also lets you select any trajectory
+and inspect its time and inertial position while the timeline moves.
 

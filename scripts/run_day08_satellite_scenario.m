@@ -8,6 +8,7 @@ arguments
     options.ShowViewer (1,1) logical = true
     options.ShowGroundTracks (1,1) logical = true
     options.ShowVisibilityControls (1,1) logical = true
+    options.ShowObservationPanel (1,1) logical = true
     options.AutoPlay (1,1) logical = true
     options.PlaybackSpeedMultiplier (1,1) double {mustBePositive,mustBeFinite} = 900
 end
@@ -41,6 +42,7 @@ writetable(verification.results,fullfile(resultsDirectory, ...
 
 viewer = [];
 controls = [];
+observationPanel = [];
 if options.ShowViewer
     viewer = satelliteScenarioViewer(scenario);
     if options.ShowGroundTracks
@@ -51,6 +53,11 @@ if options.ShowViewer
     if options.ShowVisibilityControls
         controls = createDay08VisibilityControls(viewer,satellites, ...
             day08.analysis,ShowGroundTracks=options.ShowGroundTracks);
+    end
+    if options.ShowObservationPanel
+        constants = earthConstants();
+        observationPanel = createSatelliteObservationPanel( ...
+            scenario,satellites,EarthRadiusKm=constants.radiusEarth);
     end
     if options.AutoPlay
         play(scenario,Viewer=viewer, ...
@@ -74,5 +81,5 @@ disp(summary(:,{'ScenarioName','Source', ...
 
 outputs = struct('scenario',scenario,'satellites',satellites, ...
     'viewer',viewer,'controls',controls,'analysis',day08.analysis,'summary',summary, ...
-    'verification',verification);
+    'verification',verification,'observationPanel',observationPanel);
 end
