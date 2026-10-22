@@ -62,6 +62,24 @@ Top-level scripts call reusable functions in `src`; source functions do not depe
 
 ## Final quick start
 
+### One-click Windows application
+
+Double-click **Satellite Tracker** on the Windows desktop. The shortcut launches
+the application with the installed MATLAB R2026b runtime, shows a loading window,
+and exits MATLAB automatically when the dashboard closes.
+
+The repository also contains `Satellite Tracker.cmd`; double-click it directly if
+the desktop shortcut is moved or deleted. Recreate the shortcut with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_windows_shortcut.ps1
+```
+
+MATLAB Compiler is not required for this launcher, but MATLAB R2026b must remain
+installed. The optional native 3-D globe requires Satellite Communications Toolbox.
+
+### MATLAB launch
+
 From the repository root:
 
 ```matlab
