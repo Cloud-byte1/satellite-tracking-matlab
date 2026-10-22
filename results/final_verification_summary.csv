@@ -1,0 +1,18 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+Circular-orbit analytical velocity,0,<=,1e-13,relative,1
+Circular-orbit analytical period closure,2.64483431110584e-10,<=,0.01,km,1
+Specific orbital energy conservation,6.07111185946199e-10,<=,1e-07,relative,1
+Angular momentum conservation,3.03797160933748e-10,<=,1e-07,relative,1
+Elliptical perigee agreement,2.48453943640925e-06,<=,0.25,km,1
+Elliptical apogee agreement,6.34211937722284e-06,<=,0.25,km,1
+Numerical convergence against tight solution,0.000115698544264626,<=,10,m,1
+SGP4 and two-body initial-state consistency,0,<=,1e-09,km,1
+Published Vallado SGP4 reference cases,1,==,1,logical,1
+TEME-to-J2000 rotation consistency,5.08770562206467e-16,<=,1e-10,Frobenius norm,1
+RTN reconstruction consistency,9.4435379911807e-13,<=,1e-09,km,1
+Special-relativistic GPS correction,0.00867724061656361,<=,0.15,microseconds/day,1
+Gravitational GPS correction,0.0392434936872803,<=,0.2,microseconds/day,1
+Combined GPS clock correction,0.0479207343048955,<=,0.25,microseconds/day,1
+CelesTrak catalog parsing and uniqueness,1,==,1,logical,1
+Dashboard propagated-data integrity,1,==,1,logical,1
+Automated simulation campaign success,120,>=,100,runs,1

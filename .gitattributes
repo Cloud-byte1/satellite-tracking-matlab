@@ -1,0 +1,5 @@
+*.fig binary
+*.mat binary
+*.pdf binary
+*.png binary
+*.svg text

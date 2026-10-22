@@ -4,43 +4,25 @@ MATLAB aerospace engineering portfolio project developed over 14 days.
 
 ## Current status
 
-- Day 1 implementation is complete and executable with base MATLAB.
-- Day 2 Task 1 established the CelesTrak data contract and five-satellite catalog;
-  live retrieval, parsing, and SGP4 propagation remain future work.
-- Day 3 is complete: six idealized two-body scenarios, classical-element/state
-  conversion, multi-orbit 3D visualization, comparative analysis, and 12 automated
-  verification checks were executed successfully in MATLAB R2026b on 2026-10-18.
-- Day 4 Task 1 adds complete specific-orbital-energy histories, an engineering
-  conservation plot, CSV/MAT evidence, and analytical conservation checks. Later
-  Day 4 tasks remain intentionally pending for sequential review.
-- Day 5 Task 1 documents the verified CelesTrak/OMM data contract, current project
-  readiness, cache-aware tracking architecture, and exact implementation file plan.
-- Day 5 Task 2 implements validated HTTPS retrieval and two-hour local caching. One
-  live ISS record was retrieved successfully.
-- Day 5 Task 3 assembles a verified five-spacecraft dataset: ISS, two NAVSTAR/GPS
-  satellites, NOAA-20, and Landsat 9.
-- The requested real-record simulation now propagates all five records with the
-  official Vallado/CelesTrak SGP4 MATLAB implementation. It includes a moving 3D
-  viewer with play/pause, timeline, speed, rotate, and zoom controls. The latest
-  run passed 3/3 published-reference checks and 8/8 simulation checks.
-- Day 7 is complete: six current records spanning LEO, MEO, and GEO were compared
-  with SGP4 and the custom `ode45` two-body model over 1, 6, and 24 hours. The
-  workflow produced 18 cases, 8,646 time-series rows, four technical figures, and
-  passed 3/3 SGP4 reference plus 15/15 comparison checks.
-- Day 8 is complete: the saved J2000/FK5 velocity histories now feed a stable
-  special-relativistic clock model. Nine real/theoretical scenarios produced
-  12,969 clock samples, four figures, and 15/15 verification checks. The
-  theoretical GPS result is -7.208677 microseconds/day.
-- Day 9 is complete: a cancellation-resistant gravitational model now combines
-  with the Day 8 kinematic model for six real satellites and three theoretical
-  orbits. The GPS benchmark is +45.660757 microseconds/day gravitational,
-  -7.208677 microseconds/day kinematic, and +38.452079 microseconds/day net.
-  The idealized circular-orbit crossover is 3189.0685 km, and 18/18 Day 9
-  verification checks pass.
-- Native 2D and 3D PNG exports were successfully verified in MATLAB R2026b on
-  2026-10-14 in this clean-retry copy.
-- Run `run_day01_circular_orbit` from the `scripts` directory after calling
-  `setupProject`, or follow the quick-start command below.
+The Days 1–14 implementation and final acceptance campaign are complete.
+
+- Tracks **6 real spacecraft** across LEO, MEO, and GEO from validated CelesTrak
+  records: ISS, two NAVSTAR/GPS satellites, NOAA-20, Landsat 9, and GOES-16.
+- Propagates records with Vallado/CelesTrak SGP4 and compares them with a custom
+  `ode45` two-body model over 1, 6, and 24 hours in a documented J2000/FK5 frame.
+- Resolves model differences into radial, along-track, and cross-track components.
+- Combines special- and weak-field gravitational-relativistic timing. The GPS
+  result is **+38.452079 microseconds/day** relative to an idealized stationary
+  equatorial surface clock.
+- Completed **120/120 automated simulations** and passed **17/17 final
+  verification checks** in MATLAB R2026b on 2026-10-21.
+- Exports six final PNG/FIG figures, CSV/MAT evidence, a technical report,
+  acceptance review, demonstration plan, and quantified resume bullets.
+- Provides an interactive MATLAB dashboard backed by the propagated real-satellite
+  histories, plus the native `satelliteScenario` globe workflow.
+
+The largest 24-hour two-body–SGP4 separation was 1,781.797863 km. This is
+**model disagreement, not independently validated tracking error**.
 
 ## Requirements
 
@@ -48,6 +30,9 @@ MATLAB aerospace engineering portfolio project developed over 14 days.
 - Satellite Communications Toolbox for the native `satelliteScenario` workflow
 - Communications Toolbox, DSP System Toolbox, and Signal Processing Toolbox
   (installed dependencies of Satellite Communications Toolbox)
+
+Base-MATLAB numerical analysis and the dashboard data layer do not require
+Satellite Communications Toolbox. The native globe does.
 
 ## Repository layout
 
@@ -74,6 +59,61 @@ MATLAB aerospace engineering portfolio project developed over 14 days.
 ## Reproducibility rule
 
 Top-level scripts call reusable functions in `src`; source functions do not depend on interactive workspace variables. Generated results and figures are saved outside `src`.
+
+## Final quick start
+
+From the repository root:
+
+```matlab
+setupProject;
+addpath("scripts");
+outputs = run_final_engineering_sprint();
+```
+
+The command reuses the saved campaign by default and reproduces final verification,
+performance metrics, and figures. Force all 120 simulations to run again with
+`run_final_engineering_sprint(ReuseCampaign=false)`.
+
+Launch the engineering dashboard:
+
+```matlab
+setupProject;
+addpath("apps");
+app = SatelliteTrackingDashboard();
+```
+
+The dashboard selects any tracked satellite, switches among 1-, 6-, and 24-hour
+predictions, displays SGP4 position and velocity, shows two-body separation and RTN
+components, reports relativistic timing, exports a snapshot, and can open the native
+3-D globe.
+
+## Final results
+
+| Metric | Result |
+|---|---:|
+| Real satellites analyzed | 6 |
+| Satellite/horizon comparison cases | 18 |
+| Successful automated simulations | 120/120 |
+| Final verification checks | 17/17 |
+| Maximum position separation | 1,781.797863 km |
+| Global RMS position separation | 575.823254 km |
+| Maximum relative energy drift | 6.0711e-10 |
+| Maximum relative angular-momentum drift | 3.0380e-10 |
+| Tightest 6-hour convergence difference | 0.0001157 m |
+| GPS net relativistic correction | +38.452079 microseconds/day |
+| Relative difference from +38.5 benchmark | 0.1245% |
+| Dashboard snapshot update latency | 0.884 ms |
+
+![Six real-satellite SGP4 trajectories](figures/final_01_3d_trajectories.png)
+
+![Relativistic drift by circular-orbit altitude](figures/final_06_relativistic_clock_drift.png)
+
+Detailed evidence is in `results/final_*`,
+`docs/report/final-engineering-report.md`,
+`docs/report/final-audit-and-acceptance.md`,
+`docs/video/final-demonstration-plan.md`, and `docs/resume-entry.md`.
+The paginated seven-page report is
+`output/pdf/satellite_tracking_final_engineering_report.pdf`.
 
 ## Day 1 quick start
 

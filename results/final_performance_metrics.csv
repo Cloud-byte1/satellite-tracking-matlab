@@ -1,0 +1,15 @@
+Metric,Value,Unit
+MaximumPositionSeparationKm,1781.79786304817,km
+RmsPositionSeparationKm,575.823254212503,km
+MaximumRelativeEnergyDrift,6.07111185946199e-10,relative
+MaximumRelativeAngularMomentumDrift,3.03797160933748e-10,relative
+NumericalPositionConvergenceDifferenceMeters,0.000115698544264626,m
+GpsNetRelativisticClockCorrectionMicrosecondsPerDay,38.4520792656951,microseconds/day
+GpsRelativeDifferenceFrom38p5,0.00124469439752975,relative
+SuccessfulSimulationRuns,120,runs
+VerificationTestsPassed,17,tests
+VerificationTestsFailed,0,tests
+VerificationTestsSkipped,0,tests
+ApplicationStartupTimeSeconds,20.166469,s
+PredictedPositionUpdateLatencyMilliseconds,0.884346,ms
+CampaignRuntimeSeconds,44.1091093,s
