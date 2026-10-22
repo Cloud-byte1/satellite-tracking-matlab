@@ -19,3 +19,6 @@ desktop.ini
 # Reproducible render-review intermediates
 tmp/
 
+# Satellite Observer rewrites this current-view cache at runtime.
+data/processed/satellite_observer_live.tle
+

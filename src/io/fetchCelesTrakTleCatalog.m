@@ -53,6 +53,7 @@ combinedLines = strings(0,1);
 SatelliteName = strings(count,1);
 NORADCatalogID = double(targets.CatalogNumber);
 RetrievalTimeUtc = NaT(count,1,'TimeZone','UTC');
+ElementEpochUtc = NaT(count,1,'TimeZone','UTC');
 Source = strings(count,1);
 SourceUrl = strings(count,1);
 RawFileName = strings(count,1);
@@ -111,6 +112,7 @@ for index = 1:count
 
     combinedLines = [combinedLines; lines]; %#ok<AGROW>
     SatelliteName(index) = strtrim(lines(1));
+    ElementEpochUtc(index) = parseTleEpoch(lines(2));
     RetrievalTimeUtc(index) = metadata.RetrievedAtUtc;
     Source(index) = metadata.Source;
     SourceUrl(index) = metadata.Url;
@@ -119,10 +121,23 @@ end
 
 writeLines(outputFile,combinedLines);
 RetrievalTimeUtc.Format = 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z''';
-catalog = table(SatelliteName,NORADCatalogID,RetrievalTimeUtc,Source, ...
-    SourceUrl,RawFileName);
+ElementEpochUtc.Format = 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z''';
+catalog = table(SatelliteName,NORADCatalogID,ElementEpochUtc, ...
+    RetrievalTimeUtc,Source,SourceUrl,RawFileName);
 result = struct('File',string(outputFile),'Catalog',catalog, ...
     'RetrievedAtUtc',options.NowUtc,'RecordCount',count);
+end
+
+function timestamp = parseTleEpoch(line1)
+line1 = char(line1);
+twoDigitYear = str2double(line1(19:20));
+dayOfYear = str2double(line1(21:32));
+if twoDigitYear >= 57
+    fullYear = 1900+twoDigitYear;
+else
+    fullYear = 2000+twoDigitYear;
+end
+timestamp = datetime(fullYear,1,1,'TimeZone','UTC')+days(dayOfYear-1);
 end
 
 function cache = readCache(indexFile,cacheDirectory,catalogId,namePattern)

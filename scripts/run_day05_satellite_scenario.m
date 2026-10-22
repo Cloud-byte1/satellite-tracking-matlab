@@ -20,7 +20,9 @@ scriptDirectory = fileparts(mfilename('fullpath'));
 projectRoot = fileparts(scriptDirectory);
 addpath(projectRoot); setupProject(); addpath(fullfile(projectRoot,'tests'));
 
-targets = day05SatelliteCatalog();
+% Satellite Observer uses the complete six-spacecraft engineering catalog so
+% the moving globe and the analysis views always show the same fleet.
+targets = day07SatelliteCatalog();
 tleResult = fetchCelesTrakTleCatalog(targets, ...
     CacheDirectory=fullfile(projectRoot,'data','raw'), ...
     OutputFile=fullfile(projectRoot,'data','processed', ...

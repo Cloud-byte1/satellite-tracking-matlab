@@ -18,8 +18,9 @@ The Days 1–14 implementation and final acceptance campaign are complete.
   verification checks** in MATLAB R2026b on 2026-10-21.
 - Exports six final PNG/FIG figures, CSV/MAT evidence, a technical report,
   acceptance review, demonstration plan, and quantified resume bullets.
-- Provides an interactive MATLAB dashboard backed by the propagated real-satellite
-  histories, plus the native `satelliteScenario` globe workflow.
+- Provides one Satellite Observer application with a five-second Live Now
+  geographic readout, engineering results, exports, verification, report access,
+  and the native `satelliteScenario` globe workflow.
 
 The largest 24-hour two-body–SGP4 separation was 1,781.797863 km. This is
 **model disagreement, not independently validated tracking error**.
@@ -31,8 +32,8 @@ The largest 24-hour two-body–SGP4 separation was 1,781.797863 km. This is
 - Communications Toolbox, DSP System Toolbox, and Signal Processing Toolbox
   (installed dependencies of Satellite Communications Toolbox)
 
-Base-MATLAB numerical analysis and the dashboard data layer do not require
-Satellite Communications Toolbox. The native globe does.
+Base-MATLAB numerical analysis and the saved engineering-results view do not
+require Satellite Communications Toolbox. Live Now and the native globe do.
 
 ## Repository layout
 
@@ -64,11 +65,11 @@ Top-level scripts call reusable functions in `src`; source functions do not depe
 
 ### One-click Windows application
 
-Double-click **Satellite Tracker** on the Windows desktop. The shortcut launches
+Double-click **Satellite Observer** on the Windows desktop. The shortcut launches
 the application with the installed MATLAB R2026b runtime, shows a loading window,
-and exits MATLAB automatically when the dashboard closes.
+and exits MATLAB automatically when the application closes.
 
-The repository also contains `Satellite Tracker.cmd`; double-click it directly if
+The repository also contains `Satellite Observer.cmd`; double-click it directly if
 the desktop shortcut is moved or deleted. Recreate the shortcut with:
 
 ```powershell
@@ -92,18 +93,20 @@ The command reuses the saved campaign by default and reproduces final verificati
 performance metrics, and figures. Force all 120 simulations to run again with
 `run_final_engineering_sprint(ReuseCampaign=false)`.
 
-Launch the engineering dashboard:
+Launch Satellite Observer:
 
 ```matlab
-setupProject;
-addpath("apps");
-app = SatelliteTrackingDashboard();
+app = launchSatelliteObserver();
 ```
 
-The dashboard selects any tracked satellite, switches among 1-, 6-, and 24-hour
-predictions, displays SGP4 position and velocity, shows two-body separation and RTN
-components, reports relativistic timing, exports a snapshot, and can open the native
-3-D globe.
+Satellite Observer selects any tracked satellite and can switch into **LIVE NOW**
+for a current SGP4-propagated latitude, longitude, altitude, speed, and orbital-data
+age with five-second updates. This is an orbital-elements estimate, not onboard
+telemetry. Press **LIVE 3-D VIEW** to open MATLAB `satelliteScenario` at the current
+UTC time and automatically play all six moving satellites and their ground tracks.
+The same app also provides 1-, 6-, and 24-hour engineering predictions, two-body
+separation and RTN components, relativistic timing, exports, acceptance checks, and
+the final report.
 
 ## Final results
 

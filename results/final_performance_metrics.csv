@@ -10,6 +10,6 @@ SuccessfulSimulationRuns,120,runs
 VerificationTestsPassed,17,tests
 VerificationTestsFailed,0,tests
 VerificationTestsSkipped,0,tests
-ApplicationStartupTimeSeconds,20.166469,s
-PredictedPositionUpdateLatencyMilliseconds,0.884346,ms
+ApplicationStartupTimeSeconds,NaN,s
+PredictedPositionUpdateLatencyMilliseconds,0.696872,ms
 CampaignRuntimeSeconds,44.1091093,s
