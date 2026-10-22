@@ -31,6 +31,12 @@ MATLAB aerospace engineering portfolio project developed over 14 days.
   special-relativistic clock model. Nine real/theoretical scenarios produced
   12,969 clock samples, four figures, and 15/15 verification checks. The
   theoretical GPS result is -7.208677 microseconds/day.
+- Day 9 is complete: a cancellation-resistant gravitational model now combines
+  with the Day 8 kinematic model for six real satellites and three theoretical
+  orbits. The GPS benchmark is +45.660757 microseconds/day gravitational,
+  -7.208677 microseconds/day kinematic, and +38.452079 microseconds/day net.
+  The idealized circular-orbit crossover is 3189.0685 km, and 18/18 Day 9
+  verification checks pass.
 - Native 2D and 3D PNG exports were successfully verified in MATLAB R2026b on
   2026-10-14 in this clean-retry copy.
 - Run `run_day01_circular_orbit` from the `scripts` directory after calling
@@ -226,4 +232,20 @@ clock drift. A separate visibility panel provides an individual checkbox for
 every trajectory and quick filters for **All**, **Real only**, **Theoretical
 only**, and **None**. A live observation panel also lets you select any trajectory
 and inspect its time and inertial position while the timeline moves.
+
+## Day 9 quick start
+
+```matlab
+setupProject;
+addpath("scripts");
+outputs = run_day09_general_relativity();
+```
+
+Day 9 applies the weak-field gravitational potential correction and the Day 8
+velocity correction to nine saved trajectories. It exports summary and
+time-series CSV files, a MAT result, verification evidence, and four PNG/FIG
+figure pairs. The derivation, reference-clock convention, crossover analysis,
+and limitations are documented in
+`docs/report/day09-general-relativity-guide.md`; measured results are recorded
+in `docs/logs/day09-engineering-log.md`.
 

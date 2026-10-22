@@ -1,0 +1,19 @@
+Test,MeasuredValue,Comparison,Criterion,Unit,Passed
+Zero potential difference gives zero gravitational correction,0,<=,0,dimensionless,1
+Satellite above surface has positive gravitational correction,5.05477360221444e-11,>,0,dimensionless,1
+Gravitational advantage increases with altitude,1,==,1,logical,1
+Kinematic correction has the negative sign,-8.34337643589855e-11,<,0,dimensionless,1
+GPS gravitational correction is near +45.7 microseconds/day,0.0392434936872803,<=,0.2,microseconds/day,1
+GPS kinematic correction is near -7.2 microseconds/day,0.00867724061656361,<=,0.15,microseconds/day,1
+GPS net correction is near +38.5 microseconds/day,0.0479207343048955,<=,0.25,microseconds/day,1
+Constant-rate numerical integral matches analytical solution,7.45388993583784e-19,<=,1e-15,seconds,1
+Second-to-microsecond conversion is consistent,0,<=,1e-12,microseconds,1
+Circular crossover rate is zero under stated assumptions,2.58493941422821e-26,<=,1e-20,dimensionless,1
+Net drift changes from negative to positive at crossover,1,==,1,logical,1
+Elliptical one-orbit integration matches analytical average,2.74846369244943e-11,<=,1e-06,relative,1
+Combined calculation is exactly reproducible,0,<=,0,seconds,1
+At least five timing scenarios are analyzed,9,>=,5,scenarios,1
+At least five real satellites are analyzed,6,>=,5,satellites,1
+All exported numerical histories are finite,1,==,1,logical,1
+Timezone-aware datetime input is supported,1,==,1,logical,1
+Reference-clock convention is explicitly documented,1,==,1,logical,1
