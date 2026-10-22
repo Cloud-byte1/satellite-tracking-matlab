@@ -1,6 +1,5 @@
 @echo off
 setlocal
-set "SATELLITE_TRACKER_STANDALONE=1"
 set "MATLAB_EXE=C:\Program Files\MATLAB\R2026b\bin\matlab.exe"
 
 if not exist "%MATLAB_EXE%" (
@@ -12,5 +11,10 @@ if not exist "%MATLAB_EXE%" (
     exit /b 1
 )
 
-start "Satellite Tracker" "%MATLAB_EXE%" -nosplash -nodesktop -sd "%~dp0" -r "launchSatelliteTracker;"
+if /I "%~1"=="--test" (
+    "%MATLAB_EXE%" -batch "cd('%~dp0'); assert(exist('launchSatelliteTracker','file')==2); fprintf('SATELLITE_TRACKER_LAUNCHER_TEST=PASS\n');"
+    exit /b %ERRORLEVEL%
+)
+
+"%MATLAB_EXE%" -r "cd('%~dp0'); setenv('SATELLITE_TRACKER_STANDALONE','1'); launchSatelliteTracker;"
 endlocal
