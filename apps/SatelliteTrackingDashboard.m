@@ -20,14 +20,15 @@ liveSatellites = [];
 liveTleResult = struct();
 liveTimer = [];
 lastLiveObservation = struct();
+embeddedViewer = [];
+scenarioError = [];
 
 visibility = 'off';
 if options.Visible
     visibility = 'on';
 end
 figureHandle = uifigure('Name','Satellite Observer', ...
-    'Position',[55 55 1440 850],'Visible',visibility, ...
-    'Color',[0.94 0.96 0.98]);
+    'Visible',visibility,'Color',[0.94 0.96 0.98]);
 mainLayout = uigridlayout(figureHandle,[2 1]);
 mainLayout.RowHeight = {62,'1x'};
 mainLayout.Padding = [8 8 8 8];
@@ -71,9 +72,9 @@ liveButton = uibutton(controls,'state','Text','LIVE NOW', ...
     'FontWeight','bold','Tooltip', ...
     'Propagate current CelesTrak orbital elements to the present UTC time');
 exportButton = uibutton(controls,'Text','Export snapshot');
-scenarioButton = uibutton(controls,'Text','LIVE 3-D VIEW', ...
+scenarioButton = uibutton(controls,'Text','RESTART 3-D VIEW', ...
     'FontWeight','bold','Tooltip', ...
-    'Open MATLAB satelliteScenario at the current UTC time and play it');
+    'Restart the embedded satelliteScenario at the current UTC time');
 reloadButton = uibutton(controls,'Text','Reload results');
 
 left = uigridlayout(observerLayout,[2 1]);
@@ -85,20 +86,27 @@ statusArea = uitextarea(left,'Editable','off','FontName','Consolas', ...
     'FontSize',10);
 statusArea.Value = initialStatusText();
 
-axesHandle = uiaxes(observerLayout);
-axesHandle.Layout.Row = 2; axesHandle.Layout.Column = 2;
-grid(axesHandle,'on'); axis(axesHandle,'equal'); view(axesHandle,3);
-xlabel(axesHandle,'J2000 X (km)'); ylabel(axesHandle,'J2000 Y (km)');
-zlabel(axesHandle,'J2000 Z (km)');
+scenarioHost = uipanel(observerLayout,'BorderType','none', ...
+    'BackgroundColor',[0.06 0.09 0.13], ...
+    'AutoResizeChildren','off');
+scenarioHost.Layout.Row = 2; scenarioHost.Layout.Column = 2;
+scenarioHostLayout = uigridlayout(scenarioHost,[1 1]);
+scenarioHostLayout.Padding = [0 0 0 0];
+scenarioStatusLabel = uilabel(scenarioHostLayout, ...
+    'Text','Loading the embedded satelliteScenario globe...', ...
+    'HorizontalAlignment','center','FontSize',14, ...
+    'FontColor',[0.75 0.84 0.90]);
 
 % Engineering Results tab.
 analysisLayout = uigridlayout(analysisTab,[2 2]);
 analysisLayout.RowHeight = {58,'1x'};
 analysisLayout.ColumnWidth = {'1x','1x'};
 analysisLayout.Padding = [8 8 8 8];
-actions = uigridlayout(analysisLayout,[1 5]);
+actions = uigridlayout(analysisLayout,[1 6]);
 actions.Layout.Row = 1; actions.Layout.Column = [1 2];
-actions.ColumnWidth = {190,210,170,170,'1x'};
+actions.ColumnWidth = {150,180,165,150,165,'1x'};
+returnObserverButton = uibutton(actions,'Text','Return to 3-D Observer', ...
+    'FontWeight','bold');
 verifyButton = uibutton(actions,'Text','Run acceptance checks');
 refreshButton = uibutton(actions,'Text','Update from CelesTrak');
 reportButton = uibutton(actions,'Text','Open engineering report');
@@ -142,6 +150,49 @@ guideArea = uitextarea(guideLayout,'Editable','off','FontSize',12, ...
 limitationsArea = uitextarea(guideLayout,'Editable','off','FontSize',12, ...
     'Value',limitationsText());
 
+% Floating controls shown over the full-figure satelliteScenario viewer.
+observerOverlay = uipanel(figureHandle,'Visible','off', ...
+    'Position',[14 78 390 700],'BackgroundColor',[0.09 0.16 0.23], ...
+    'ForegroundColor','white','BorderType','line','HighlightColor',[0.3 0.7 0.8]);
+overlayLayout = uigridlayout(observerOverlay,[8 1]);
+overlayLayout.RowHeight = {44,28,38,38,'1x',38,38,24};
+overlayLayout.Padding = [12 10 12 10];
+uilabel(overlayLayout,'Text','SATELLITE OBSERVER', ...
+    'FontSize',20,'FontWeight','bold','FontColor','white');
+uilabel(overlayLayout,'Text','Embedded MATLAB satelliteScenario', ...
+    'FontColor',[0.55 0.90 0.84]);
+overlaySatelliteDropDown = uidropdown(overlayLayout, ...
+    'Items',satelliteDropDown.Items,'Value',satelliteDropDown.Value);
+overlayModeRow = uigridlayout(overlayLayout,[1 2]);
+overlayModeRow.ColumnWidth = {'1x','1x'};
+overlayModeRow.Padding = [0 0 0 0];
+overlayLiveButton = uibutton(overlayModeRow,'state','Text','LIVE NOW', ...
+    'FontWeight','bold');
+overlayHorizonDropDown = uidropdown(overlayModeRow, ...
+    'Items',horizonDropDown.Items,'ItemsData',horizonDropDown.ItemsData, ...
+    'Value',horizonDropDown.Value);
+overlaySummaryArea = uitextarea(overlayLayout,'Editable','off', ...
+    'FontName','Consolas','FontSize',11);
+overlayPrimaryButtons = uigridlayout(overlayLayout,[1 2]);
+overlayPrimaryButtons.ColumnWidth = {'1x','1x'};
+overlayPrimaryButtons.Padding = [0 0 0 0];
+overlayRestartButton = uibutton(overlayPrimaryButtons, ...
+    'Text','Restart 3-D view','FontWeight','bold');
+overlayEngineeringButton = uibutton(overlayPrimaryButtons, ...
+    'Text','Engineering results');
+overlaySecondaryButtons = uigridlayout(overlayLayout,[1 2]);
+overlaySecondaryButtons.ColumnWidth = {'1x','1x'};
+overlaySecondaryButtons.Padding = [0 0 0 0];
+overlayExportButton = uibutton(overlaySecondaryButtons,'Text','Export snapshot');
+overlayReportButton = uibutton(overlaySecondaryButtons,'Text','Open report');
+overlayStatusLabel = uilabel(overlayLayout, ...
+    'Text','Six satellites • current UTC start • 60x playback', ...
+    'FontSize',10,'FontColor',[0.72 0.80 0.86]);
+
+% Apply the final window size only after the engineering layout hierarchy exists.
+figureHandle.Position = [55 55 1440 850];
+drawnow;
+
 satelliteDropDown.ValueChangedFcn = @(~,~) updateObserver();
 horizonDropDown.ValueChangedFcn = @(~,~) updateObserver();
 liveButton.ValueChangedFcn = @(~,~) toggleLiveView();
@@ -152,19 +203,39 @@ verifyButton.ButtonPushedFcn = @(~,~) runAcceptanceChecks();
 refreshButton.ButtonPushedFcn = @(~,~) refreshCelesTrakData();
 reportButton.ButtonPushedFcn = @(~,~) openReport();
 resultsButton.ButtonPushedFcn = @(~,~) openResults();
+returnObserverButton.ButtonPushedFcn = @(~,~) initializeEmbeddedScenario();
 figureHandle.CloseRequestFcn = @(~,~) closeApplication();
+tabs.SelectionChangedFcn = @(~,~) handleTabSelection();
+overlaySatelliteDropDown.ValueChangedFcn = @(~,~) overlaySatelliteChanged();
+overlayHorizonDropDown.ValueChangedFcn = @(~,~) overlayHorizonChanged();
+overlayLiveButton.ValueChangedFcn = @(~,~) overlayLiveChanged();
+overlayRestartButton.ButtonPushedFcn = @(~,~) restartEmbeddedScenario();
+overlayEngineeringButton.ButtonPushedFcn = @(~,~) showEngineeringConsole();
+overlayExportButton.ButtonPushedFcn = @(~,~) exportSnapshot();
+overlayReportButton.ButtonPushedFcn = @(~,~) openReport();
 updateObserver();
 
 app = struct('Figure',figureHandle,'Tabs',tabs, ...
-    'SatelliteDropDown',satelliteDropDown, ...
-    'HorizonDropDown',horizonDropDown,'LiveButton',liveButton, ...
-    'Axes',axesHandle, ...
-    'SummaryArea',summaryArea,'StatusArea',statusArea, ...
+    'SatelliteDropDown',overlaySatelliteDropDown, ...
+    'HorizonDropDown',overlayHorizonDropDown, ...
+    'LiveButton',overlayLiveButton,'ScenarioHost',scenarioHost, ...
+    'ObserverOverlay',observerOverlay, ...
+    'SummaryArea',overlaySummaryArea,'StatusArea',statusArea, ...
     'PerformanceTable',performanceTable, ...
     'VerificationTable',verificationTable, ...
     'ApplicationStatus',applicationStatus, ...
     'Comparison',day07.comparison,'Catalog',day07.catalog, ...
-    'TimingSummary',day09.analysis.summary);
+    'TimingSummary',day09.analysis.summary, ...
+    'GetScenarioViewer',@getScenarioViewer, ...
+    'GetScenario',@getScenario, ...
+    'GetScenarioError',@getScenarioError, ...
+    'RestartScenario',@restartEmbeddedScenario, ...
+    'ShowEngineering',@showEngineeringConsole, ...
+    'Close',@closeApplication);
+if options.Visible
+    drawnow;
+    initializeEmbeddedScenario();
+end
 
     function [snapshot,satelliteIndex] = currentSnapshot()
         satelliteIndex = find(string(day07.catalog.SatelliteName)== ...
@@ -173,34 +244,43 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
             day09.analysis.summary,satelliteIndex,horizonDropDown.Value);
     end
 
+    function value = getScenarioViewer()
+        value = embeddedViewer;
+    end
+
+    function value = getScenario()
+        value = liveScenario;
+    end
+
+    function value = getScenarioError()
+        value = scenarioError;
+    end
+
+    function overlaySatelliteChanged()
+        satelliteDropDown.Value = overlaySatelliteDropDown.Value;
+        updateObserver();
+    end
+
+    function overlayHorizonChanged()
+        horizonDropDown.Value = overlayHorizonDropDown.Value;
+        updateObserver();
+    end
+
+    function overlayLiveChanged()
+        liveButton.Value = overlayLiveButton.Value;
+        toggleLiveView();
+    end
+
     function updateObserver()
+        overlaySatelliteDropDown.Value = satelliteDropDown.Value;
+        overlayHorizonDropDown.Value = horizonDropDown.Value;
         if liveButton.Value
             updateLiveObserver();
             return
         end
-        [snapshot,satelliteIndex] = currentSnapshot();
-        horizonIndex = find(day07.comparison.elapsedSeconds<= ...
-            snapshot.HorizonHours*3600);
-        rSgp4 = day07.comparison.positionSgp4J2000Km( ...
-            horizonIndex,:,satelliteIndex);
-        rTwoBody = day07.comparison.positionTwoBodyJ2000Km( ...
-            horizonIndex,:,satelliteIndex);
-        cla(axesHandle);
-        [xEarth,yEarth,zEarth] = sphere(40);
-        earthRadius = day07.comparison.config.earthRadiusKm;
-        surf(axesHandle,xEarth*earthRadius,yEarth*earthRadius, ...
-            zEarth*earthRadius,'FaceColor',[0.12 0.34 0.62], ...
-            'EdgeColor','none','FaceAlpha',0.72, ...
-            'DisplayName','Earth');
-        hold(axesHandle,'on');
-        plot3(axesHandle,rSgp4(:,1),rSgp4(:,2),rSgp4(:,3), ...
-            'LineWidth',2,'DisplayName','SGP4');
-        plot3(axesHandle,rTwoBody(:,1),rTwoBody(:,2),rTwoBody(:,3), ...
-            '--','LineWidth',1.5,'DisplayName','ode45 two-body');
-        hold(axesHandle,'off'); legend(axesHandle,'Location','best');
-        title(axesHandle,sprintf('%s - %.0f-hour prediction', ...
-            snapshot.SatelliteName,snapshot.HorizonHours));
+        snapshot = currentSnapshot();
         summaryArea.Value = composeSummary(snapshot);
+        overlaySummaryArea.Value = summaryArea.Value;
         drawnow limitrate;
     end
 
@@ -219,22 +299,7 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
     end
 
     function openScenario()
-        appendStatus('Opening moving satelliteScenario globe at current UTC...');
-        applicationStatus.Text = 'OPENING LIVE MOVING 3-D VIEW';
-        drawnow;
-        try
-            startTime = datetime('now','TimeZone','UTC');
-            run_day05_satellite_scenario(StartTimeUtc=startTime, ...
-                DurationHours=3,StepSeconds=10, ...
-                ForceRefresh=false,ShowViewer=true,ShowGroundTracks=true, ...
-                ShowObservationPanel=true,AutoPlay=true, ...
-                PlaybackSpeedMultiplier=60);
-            applicationStatus.Text = 'READY - moving 3-D view opened';
-        catch exception
-            applicationStatus.Text = 'ERROR - 3-D globe could not open';
-            uialert(figureHandle,getReport(exception,'basic','hyperlinks','off'), ...
-                '3-D globe error','Icon','error');
-        end
+        restartEmbeddedScenario();
     end
 
     function reloadSavedResults()
@@ -349,45 +414,32 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
     end
 
     function startLiveView()
-        progress = [];
-        if strcmp(figureHandle.Visible,'on')
-            progress = uiprogressdlg(figureHandle,'Title','Live Now', ...
-                'Message','Loading current CelesTrak orbital elements...', ...
-                'Indeterminate','on','Cancelable','off');
-        end
         applicationStatus.Text = 'STARTING LIVE NOW';
         drawnow;
         try
-            targets = day07SatelliteCatalog();
-            liveTleResult = fetchCelesTrakTleCatalog(targets, ...
-                CacheDirectory=fullfile(projectRoot,'data','raw'), ...
-                OutputFile=fullfile(projectRoot,'data','processed', ...
-                    'satellite_observer_live.tle'),ForceRefresh=false);
-            if ~isempty(progress)
-                progress.Message = 'Creating the live SGP4 scenario...';
+            if isempty(liveSatellites)
+                initializeEmbeddedScenario();
             end
-            drawnow;
-            startTime = datetime('now','TimeZone','UTC');
-            [liveScenario,liveSatellites] = createNativeSatelliteScenario( ...
-                liveTleResult.File,StartTimeUtc=startTime, ...
-                DurationHours=3,StepSeconds=60);
+            if isempty(liveSatellites)
+                error('SatelliteTrackingDashboard:ScenarioUnavailable', ...
+                    'The embedded satelliteScenario is unavailable.');
+            end
             liveTimer = timer('ExecutionMode','fixedSpacing','Period',5, ...
                 'BusyMode','drop','TimerFcn',@(~,~) liveTimerTick());
             setappdata(figureHandle,'SatelliteObserverLiveTimer',liveTimer);
             horizonDropDown.Enable = 'off';
+            overlayHorizonDropDown.Enable = 'off';
             applicationStatus.Text = 'LIVE NOW - updates every 5 seconds';
             appendStatus('Live Now started. Position is SGP4-propagated, not telemetry.');
             updateLiveObserver();
             start(liveTimer);
         catch exception
             liveButton.Value = false;
+            overlayLiveButton.Value = false;
             stopLiveView();
             applicationStatus.Text = 'ERROR - LIVE NOW unavailable';
             uialert(figureHandle,getReport(exception,'basic','hyperlinks','off'), ...
                 'Live Now error','Icon','error');
-        end
-        if ~isempty(progress) && isvalid(progress)
-            delete(progress);
         end
     end
 
@@ -444,26 +496,129 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
             'ElementAgeHours',elementAgeHours, ...
             'RetrievalTimeUtc',retrievalTime,'Source',source);
         summaryArea.Value = composeLiveSummary(lastLiveObservation);
-        plotLiveOrbit(satelliteIndex,timestamp,positionKm);
+        overlaySummaryArea.Value = summaryArea.Value;
         applicationStatus.Text = "LIVE NOW - "+ ...
             string(timestamp,"HH:mm:ss 'UTC'")+" - updates every 5 s";
         drawnow limitrate;
     end
 
-    function plotLiveOrbit(satelliteIndex,timestamp,positionKm)
-        cla(axesHandle);
-        [xEarth,yEarth,zEarth] = sphere(40);
-        earthRadius = day07.comparison.config.earthRadiusKm;
-        surf(axesHandle,xEarth*earthRadius,yEarth*earthRadius, ...
-            zEarth*earthRadius,'FaceColor',[0.12 0.34 0.62], ...
-            'EdgeColor','none','FaceAlpha',0.72,'DisplayName','Earth');
-        hold(axesHandle,'on');
-        scatter3(axesHandle,positionKm(1),positionKm(2),positionKm(3), ...
-            85,[1.00 0.62 0.10],'filled','DisplayName','Position now');
-        hold(axesHandle,'off');
-        legend(axesHandle,'Location','best');
-        title(axesHandle,string(satelliteDropDown.Value)+ ...
-            " - LIVE NOW at "+string(timestamp,"HH:mm:ss 'UTC'"));
+    function initializeEmbeddedScenario()
+        if ~isempty(embeddedViewer) && isvalid(embeddedViewer)
+            header.Visible = 'off';
+            tabs.Visible = 'off';
+            observerOverlay.Visible = 'on';
+            uistack(observerOverlay,'top');
+            return
+        end
+        progress = [];
+        if strcmp(figureHandle.Visible,'on')
+            progress = uiprogressdlg(figureHandle, ...
+                'Title','Satellite Observer', ...
+                'Message','Loading the embedded satelliteScenario...', ...
+                'Indeterminate','on','Cancelable','off');
+        end
+        scenarioStatusLabel.Visible = 'on';
+        scenarioStatusLabel.Text = ...
+            'Loading current orbital elements and the 3-D globe...';
+        applicationStatus.Text = 'LOADING EMBEDDED 3-D VIEW';
+        scenarioError = [];
+        drawnow;
+        try
+            targets = day07SatelliteCatalog();
+            liveTleResult = fetchCelesTrakTleCatalog(targets, ...
+                CacheDirectory=fullfile(projectRoot,'data','raw'), ...
+                OutputFile=fullfile(projectRoot,'data','processed', ...
+                    'satellite_observer_live.tle'),ForceRefresh=false);
+            startTime = datetime('now','TimeZone','UTC');
+            [liveScenario,liveSatellites] = createNativeSatelliteScenario( ...
+                liveTleResult.File,StartTimeUtc=startTime, ...
+                DurationHours=3,StepSeconds=10);
+            embeddedViewer = satelliteScenarioViewer(liveScenario, ...
+                Parent=figureHandle);
+            for satelliteIndex = 1:numel(liveSatellites)
+                show(liveSatellites(satelliteIndex).GroundTrack,embeddedViewer);
+            end
+            embeddedViewer.PlaybackSpeedMultiplier = 60;
+            scenarioStatusLabel.Visible = 'off';
+            header.Visible = 'off';
+            tabs.Visible = 'off';
+            observerOverlay.Visible = 'on';
+            uistack(observerOverlay,'top');
+            % Viewer construction can replace figure callbacks, so restore the
+            % Satellite Observer lifecycle callbacks after embedding it.
+            figureHandle.CloseRequestFcn = @(~,~) closeApplication();
+            play(liveScenario,Viewer=embeddedViewer, ...
+                PlaybackSpeedMultiplier=60);
+            applicationStatus.Text = ...
+                '3-D VIEW PLAYING - starts at current UTC, 60x speed';
+            appendStatus(['Embedded satelliteScenario started with six ' ...
+                'moving satellites at 60x speed.']);
+        catch exception
+            scenarioError = exception;
+            cleanupEmbeddedScenario();
+            scenarioStatusLabel.Visible = 'on';
+            scenarioStatusLabel.Text = ...
+                "Embedded 3-D view unavailable: "+string(exception.message);
+            applicationStatus.Text = 'ERROR - EMBEDDED 3-D VIEW unavailable';
+            observerOverlay.Visible = 'off';
+            header.Visible = 'on';
+            tabs.Visible = 'on';
+            if strcmp(figureHandle.Visible,'on')
+                uialert(figureHandle, ...
+                    getReport(exception,'basic','hyperlinks','off'), ...
+                    'Embedded 3-D view error','Icon','error');
+            end
+        end
+        if ~isempty(progress) && isvalid(progress)
+            delete(progress);
+        end
+    end
+
+    function restartEmbeddedScenario()
+        liveWasEnabled = liveButton.Value;
+        liveButton.Value = false;
+        stopLiveView();
+        cleanupEmbeddedScenario();
+        initializeEmbeddedScenario();
+        if liveWasEnabled && ~isempty(liveSatellites)
+            liveButton.Value = true;
+            overlayLiveButton.Value = true;
+            startLiveView();
+        end
+    end
+
+    function showEngineeringConsole()
+        overlayLiveButton.Value = false;
+        liveButton.Value = false;
+        stopLiveView();
+        cleanupEmbeddedScenario();
+        observerOverlay.Visible = 'off';
+        header.Visible = 'on';
+        tabs.Visible = 'on';
+        tabs.SelectedTab = analysisTab;
+        applicationStatus.Text = 'ENGINEERING RESULTS - 3-D view paused';
+    end
+
+    function handleTabSelection()
+        if tabs.SelectedTab == observerTab && ...
+                (isempty(embeddedViewer) || ~isvalid(embeddedViewer))
+            initializeEmbeddedScenario();
+        end
+    end
+
+    function cleanupEmbeddedScenario()
+        if ~isempty(liveScenario)
+            try
+                stop(liveScenario);
+            catch
+            end
+        end
+        if ~isempty(embeddedViewer) && isvalid(embeddedViewer)
+            delete(embeddedViewer);
+        end
+        embeddedViewer = [];
+        liveScenario = [];
+        liveSatellites = [];
     end
 
     function stopLiveView()
@@ -477,6 +632,7 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
             rmappdata(figureHandle,'SatelliteObserverLiveTimer');
         end
         horizonDropDown.Enable = 'on';
+        overlayHorizonDropDown.Enable = 'on';
         if isvalid(figureHandle)
             applicationStatus.Text = 'READY - verified saved orbital data loaded';
         end
@@ -484,6 +640,7 @@ app = struct('Figure',figureHandle,'Tabs',tabs, ...
 
     function closeApplication()
         stopLiveView();
+        cleanupEmbeddedScenario();
         if isvalid(figureHandle)
             delete(figureHandle);
         end
@@ -620,9 +777,10 @@ lines = { ...
     'OBSERVER TAB'; ...
     '1. Select one of the six real satellites.'; ...
     '2. Press LIVE NOW for the current propagated position and 5-second updates.'; ...
-    '3. Press LIVE 3-D VIEW to open satelliteScenario and watch all satellites move.'; ...
-    '4. Drag/zoom the globe and use its play, pause, and timeline controls.'; ...
-    '5. Or select an engineering horizon, inspect results, and export a snapshot.'; ...
+    '3. The embedded satelliteScenario shows all six satellites moving.'; ...
+    '4. Drag/zoom the globe and use its built-in timeline controls.'; ...
+    '5. Use RESTART 3-D VIEW to reset the globe to current UTC.'; ...
+    '6. Or select an engineering horizon, inspect results, and export a snapshot.'; ...
     ''; ...
     'ENGINEERING RESULTS TAB'; ...
     '- Review performance metrics and every verification check.'; ...

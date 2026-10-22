@@ -102,8 +102,9 @@ app = launchSatelliteObserver();
 Satellite Observer selects any tracked satellite and can switch into **LIVE NOW**
 for a current SGP4-propagated latitude, longitude, altitude, speed, and orbital-data
 age with five-second updates. This is an orbital-elements estimate, not onboard
-telemetry. Press **LIVE 3-D VIEW** to open MATLAB `satelliteScenario` at the current
-UTC time and automatically play all six moving satellites and their ground tracks.
+telemetry. The Observer tab embeds MATLAB `satelliteScenario` directly in the app
+and automatically plays all six moving satellites and their ground tracks from the
+current UTC time. Use **RESTART 3-D VIEW** to reset the embedded globe.
 The same app also provides 1-, 6-, and 24-hour engineering predictions, two-body
 separation and RTN components, relativistic timing, exports, acceptance checks, and
 the final report.

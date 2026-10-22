@@ -11,5 +11,5 @@ VerificationTestsPassed,17,tests
 VerificationTestsFailed,0,tests
 VerificationTestsSkipped,0,tests
 ApplicationStartupTimeSeconds,NaN,s
-PredictedPositionUpdateLatencyMilliseconds,0.696872,ms
+PredictedPositionUpdateLatencyMilliseconds,0.86746,ms
 CampaignRuntimeSeconds,44.1091093,s
